@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <title>Mi Tour Virtual 360</title>
+    <meta name="description" content="Laboratorio de ciencias de los materiales">
+
+    <!-- A-Frame y componentes de interacción y layout -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-template-component@3.2.2/dist/aframe-template-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+
+    <!-- Componente que ejecuta el cambio de textura con animación -->
+    <script src="components/set-image.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <!-- TUS 3 FOTOS 360 -->
+        <img id="charpy" crossorigin="anonymous" src="img/charpy.jpg">
+        <img id="traccion" crossorigin="anonymous" src="img/traccion.jpg">
+        <img id="compresion" crossorigin="anonymous" src="img/compresion.jpg">
+
+        <!-- TUS 3 MINIATURAS (BOTONES) -->
+        <img id="charpyM" crossorigin="anonymous" src="img/charpyMinuatura.jpg">
+        <img id="traccionM" crossorigin="anonymous" src="img/traccionMiniatura.jpg">
+        <img id="compresionM" crossorigin="anonymous" src="img/compresionMiniatura.jpg">
+
+        <!-- Plantilla reutilizable para cada botón del menú con texto inferior -->
+        <script id="link" type="text/html">
+          <a-entity class="link"
+            geometry="primitive: plane; height: 1; width: 1"
+            material="shader: flat; src: ${thumb}"
+            event-set__1="_event: mousedown; scale: 1 1 1"
+            event-set__2="_event: mouseup; scale: 1.2 1.2 1"
+            event-set__3="_event: mouseenter; scale: 1.2 1.2 1"
+            event-set__4="_event: mouseleave; scale: 1 1 1"
+            set-image="on: click; target: #image-360; src: ${src}">
+            
+            <a-text 
+              value="${title}" 
+              align="center" 
+              position="0 -0.75 0.05" 
+              width="2.8" 
+              color="#FFFFFF">
+            </a-text>
+          </a-entity>
+        </script>
+      </a-assets>
+
+      <!-- FONDO 360 INICIAL (empieza en la foto 1) -->
+      <a-sky id="image-360" radius="10" src="#charpy"></a-sky>
+
+      <!-- TÍTULO DEL RECORRIDO -->
+      <a-text position="-1.5 1.5 -4"
+              anchor="left"
+              width="6"
+              color="white"
+              id="img-text"
+              value="Laboratorio de Ciencias de los Materiales"></a-text>
+      
+      <!-- MENÚ DE 3 BOTONES CON SUS RESPECTIVOS TÍTULOS -->
+      <a-entity id="links" layout="type: line; margin: 1.5" position="-1.5 0 -4">
+        <a-entity template="src: #link" data-src="#charpy" data-thumb="#charpyM" data-title="Ensayo de choque"></a-entity>
+        <a-entity template="src: #link" data-src="#traccion" data-thumb="#traccionM" data-title="Ensayo de traccion"></a-entity>
+        <a-entity template="src: #link" data-src="#compresion" data-thumb="#compresionM" data-title="Ensayo de compresion"></a-entity>
+      </a-entity>
+      
+      <!-- CÁMARA CON CURSOR INTERACTIVO -->
+      <a-entity camera look-controls>
+        <a-cursor id="cursor"
+          animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
+          animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
+          event-set__1="_event: mouseenter; color: springgreen"
+          event-set__2="_event: mouseleave; color: black"
+          fuse="true"
+          raycaster="objects: .link">
+        </a-cursor>
+      </a-entity>
+      
+    </a-scene>
+  </body>
+</html>
